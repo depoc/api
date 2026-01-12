@@ -100,7 +100,8 @@ class CustomerEndpoint(APIView):
             error_response = error.builder(400, message, invalid=invalid_params)
             return Response(error_response, status.HTTP_400_BAD_REQUEST)
 
-        serializer = CustomerSerializer(data=data, context={'business': business})
+        data['business'] = business.id
+        serializer = CustomerSerializer(data=data)
         if not serializer.is_valid():
             message = 'Validation failed.'
             error_response = error.builder(400, message, details=serializer.errors)
@@ -209,7 +210,8 @@ class SupplierEndpoint(APIView):
             error_response = error.builder(400, message, invalid=invalid_params)
             return Response(error_response, status.HTTP_400_BAD_REQUEST)
 
-        serializer = SupplierSerializer(data=data, context={'business': business})
+        data['business'] = business.id
+        serializer = SupplierSerializer(data=data)
         if not serializer.is_valid():
             message = 'Validation failed.'
             error_response = error.builder(400, message, details=serializer.errors)

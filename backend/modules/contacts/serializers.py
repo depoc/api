@@ -33,16 +33,6 @@ class CustomerSerializer(serializers.ModelSerializer):
                 'updated_at': representation.pop('updated_at'),
             }
         }
-    
-
-    def create(self, validated_data):
-        business = self.context['business']
-        
-        customer = super().create(validated_data)
-        customer.business = business
-        customer.save()
-
-        return customer
 
 
 class SupplierSerializer(serializers.ModelSerializer):
@@ -74,13 +64,3 @@ class SupplierSerializer(serializers.ModelSerializer):
                 'updated_at': representation.pop('updated_at'),
             }
         }
-    
-
-    def create(self, validated_data):
-        business = self.context['business']
-        
-        supplier = super().create(validated_data)
-        supplier.business = business
-        supplier.save()
-
-        return supplier
