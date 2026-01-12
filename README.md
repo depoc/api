@@ -1,8 +1,6 @@
 # DEPOC 
 
-A comprehensive management system built by a business owner, tailored for small Brazilian businesses.
-
-This project took shape in response to a specific need in my last brick-and-mortar store.
+The Depoc RESTful api made with Django
 
 # Contents
 
