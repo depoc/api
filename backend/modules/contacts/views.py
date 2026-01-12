@@ -32,16 +32,14 @@ class ContactsEndpoint(APIView):
                 error_response = error.builder(400, 'Enter at least 3 characters.')
                 return Response(error_response, status.HTTP_400_BAD_REQUEST)
             
-            search_customers = Customer.objects.filter(
-                Q(business=business) &
+            search_customers = business.customers.filter(
                 Q(code__icontains=search) |
                 Q(name__icontains=search) |
                 Q(alias__icontains=search) |
                 Q(cpf__icontains=search)
             )
 
-            search_suppliers = Supplier.objects.filter(
-                Q(business=business) &
+            search_suppliers = business.suppliers.filter(
                 Q(code__icontains=search) |
                 Q(legal_name__icontains=search) |
                 Q(trade_name__icontains=search) |
