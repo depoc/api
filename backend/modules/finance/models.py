@@ -47,7 +47,7 @@ class FinancialCategory(models.Model):
         null=True, 
     )
 
-    name = models.CharField(max_length=150, unique=True)
+    name = models.CharField(max_length=150)
     is_active = models.BooleanField(default=True)
 
     
