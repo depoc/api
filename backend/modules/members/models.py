@@ -24,7 +24,7 @@ class Member(models.Model):
     )
 
     name = models.CharField(max_length=150)
-    cpf = models.CharField(max_length=11, unique=True, blank=True, null=True)
+    cpf = models.CharField(max_length=11)
     date_of_birth = models.DateField(blank=True, null=True)  
     role = models.CharField(max_length=150, blank=True, null=True)
     hire_date = models.DateField(blank=True, null=True)
@@ -36,10 +36,28 @@ class Member(models.Model):
         null=True,
     )
 
-    phone = models.CharField(max_length=11, unique=True)
-    email = models.EmailField(unique=True, blank=False, null=False)
+    phone = models.CharField(max_length=11)
+    email = models.EmailField()
     has_access = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['business', 'cpf'],
+                name='uniq_member_cpf_per_business'
+            ),
+            models.UniqueConstraint(
+                fields=['business', 'phone'],
+                name='uniq_member_phone_per_business'
+            ),
+            models.UniqueConstraint(
+                fields=['business', 'email'],
+                name='uniq_member_email_per_business'
+            )
+        ]
+
 
     def __str__(self):
         return self.name
