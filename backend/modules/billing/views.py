@@ -45,7 +45,8 @@ class ReceivablesEndpoint(APIView):
             serializer = PaymentSerializer(payment)
             return Response(serializer.data, status.HTTP_200_OK)
         else:
-            search = request.query_params.get('search', None)
+            search = request.query_params.get('search')
+            _status = request.query_params.get('status')
             date = request.query_params.get('date')
             start_date = request.query_params.get('start_date')
             end_date = request.query_params.get('end_date')
@@ -61,7 +62,22 @@ class ReceivablesEndpoint(APIView):
                     Q(contact__supplier__legal_name__icontains=search) |
                     Q(contact__supplier__trade_name__icontains=search) |
                     Q(reference__icontains=search) |
-                    Q(notes__icontains=search)
+                    Q(notes__icontains=search) |
+                    Q(total_amount__icontains=search) | 
+                    Q(id__exact=search)
+                )
+
+            if _status:
+                if _status not in ('pending', 'paid', 'overdue', 'partially_paid'):
+                    error_response = error.builder(
+                        400,
+                        'Invalid status. ' \
+                        'Allowed values: pending, paid, overdue, partially_paid.'
+                    )
+                    return Response(error_response, status.HTTP_400_BAD_REQUEST)
+                
+                payments = payments.filter(
+                    Q(status__exact=_status)
                 )
 
             if date:
@@ -356,7 +372,8 @@ class PayablesEndpoint(APIView):
             serializer = PaymentSerializer(payment)
             return Response(serializer.data, status.HTTP_200_OK)
         else:
-            search = request.query_params.get('search', None)
+            search = request.query_params.get('search')
+            _status = request.query_params.get('status')
             date = request.query_params.get('date')
             start_date = request.query_params.get('start_date')
             end_date = request.query_params.get('end_date')
@@ -372,7 +389,22 @@ class PayablesEndpoint(APIView):
                     Q(contact__supplier__legal_name__icontains=search) |
                     Q(contact__supplier__trade_name__icontains=search) |
                     Q(reference__icontains=search) |
-                    Q(notes__icontains=search)
+                    Q(notes__icontains=search) |
+                    Q(total_amount__icontains=search) | 
+                    Q(id__exact=search)
+                )
+
+            if _status:
+                if _status not in ('pending', 'paid', 'overdue', 'partially_paid'):
+                    error_response = error.builder(
+                        400,
+                        'Invalid status. ' \
+                        'Allowed values: pending, paid, overdue, partially_paid.'
+                    )
+                    return Response(error_response, status.HTTP_400_BAD_REQUEST)
+                
+                payments = payments.filter(
+                    Q(status__exact=_status)
                 )
 
             if date:
