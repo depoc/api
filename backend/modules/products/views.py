@@ -22,41 +22,6 @@ from shared import (
 )
 
 
-class ProductSearchEndpoint(APIView):
-    permission_classes = [permissions.IsAdminUser]
-    throttle_classes = [BurstRateThrottle, SustainedRateThrottle]
-
-    def get(self, request):
-        search = request.query_params.get('search', None)
-
-        if not search:
-            error_response = error.builder(400, 'Provide a search term.')
-            return Response(error_response, status.HTTP_400_BAD_REQUEST)
-        
-        if len(search) < 3:
-            error_response = error.builder(400, 'Enter at least 3 characters.')
-            return Response(error_response, status.HTTP_400_BAD_REQUEST)
-
-        business, got_no_business = get_user_business(request.user)
-
-        if got_no_business:
-            return Response(got_no_business, status.HTTP_404_NOT_FOUND)
-        
-        products = business.products
-
-        search_products = products.filter(
-            Q(name__icontains=search) |
-            Q(id__exact=search) |
-            Q(sku__exact=search) |
-            Q(barcode__exact=search)
-        )
-
-        serializer = ProductSerializer(search_products, many=True)
-        paginated_data = paginate(serializer.data, request, 50)
-
-        return paginated_data
-
-
 class ProductEndpoint(APIView):
     permission_classes = [permissions.IsAdminUser]
     throttle_classes = [BurstRateThrottle, SustainedRateThrottle]
@@ -81,6 +46,24 @@ class ProductEndpoint(APIView):
         else:
             serializer = ProductSerializer(products, many=True)
             paginated_data = paginate(serializer.data, request, 50)
+
+            search = request.query_params.get('search', None)
+            if search:
+                if len(search) < 3:
+                    error_response = error.builder(400, 'Enter at least 3 characters.')
+                    return Response(error_response, status.HTTP_400_BAD_REQUEST)
+                
+                search_products = products.filter(
+                    Q(name__icontains=search) |
+                    Q(id__exact=search) |
+                    Q(sku__exact=search) |
+                    Q(barcode__exact=search)
+                )
+
+                serializer = ProductSerializer(search_products, many=True)
+                paginated_data = paginate(serializer.data, request, 50)
+                return paginated_data
+
             return paginated_data
 
 

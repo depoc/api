@@ -16,52 +16,6 @@ from shared import (
     get_user_business,
 )
 
-
-class ContactsSearchEndpoint(APIView):
-    permission_classes = [permissions.IsAdminUser]
-    throttle_classes = [BurstRateThrottle, SustainedRateThrottle]
-
-    def get(self, request):
-        search = request.query_params.get('search', None)
-
-        if not search:
-            error_response = error.builder(400, 'Provide a search term.')
-            return Response(error_response, status.HTTP_400_BAD_REQUEST)
-        
-        if len(search) < 3:
-            error_response = error.builder(400, 'Enter at least 3 characters.')
-            return Response(error_response, status.HTTP_400_BAD_REQUEST)
-
-        business, got_no_business = get_user_business(request.user)
-
-        if got_no_business:
-            return Response(got_no_business, status.HTTP_404_NOT_FOUND)
-
-        search_customers = Customer.objects.filter(
-            Q(business=business) &
-            Q(code__icontains=search) |
-            Q(name__icontains=search) |
-            Q(alias__icontains=search) |
-            Q(cpf__icontains=search)
-        )
-
-        search_suppliers = Supplier.objects.filter(
-            Q(business=business) &
-            Q(code__icontains=search) |
-            Q(legal_name__icontains=search) |
-            Q(trade_name__icontains=search) |
-            Q(cnpj__icontains=search)
-        )
-
-        customers = CustomerSerializer(search_customers, many=True)
-        suppliers = SupplierSerializer(search_suppliers, many=True)
-        contacts = customers.data + suppliers.data
-
-        paginated_data = paginate(contacts, request, 50)
-
-        return paginated_data
-
-
 class ContactsEndpoint(APIView):
     permission_classes = [permissions.IsAdminUser]
     throttle_classes = [BurstRateThrottle, SustainedRateThrottle]
@@ -72,9 +26,35 @@ class ContactsEndpoint(APIView):
         if got_no_business:
             return Response(got_no_business, status.HTTP_400_BAD_REQUEST)
 
-        customers = CustomerSerializer(business.customers, many=True)
-        suppliers = SupplierSerializer(business.suppliers, many=True)   
-        contacts = customers.data + suppliers.data
+        search = request.query_params.get('search', None)
+        if search:
+            if len(search) < 3:
+                error_response = error.builder(400, 'Enter at least 3 characters.')
+                return Response(error_response, status.HTTP_400_BAD_REQUEST)
+            
+            search_customers = Customer.objects.filter(
+                Q(business=business) &
+                Q(code__icontains=search) |
+                Q(name__icontains=search) |
+                Q(alias__icontains=search) |
+                Q(cpf__icontains=search)
+            )
+
+            search_suppliers = Supplier.objects.filter(
+                Q(business=business) &
+                Q(code__icontains=search) |
+                Q(legal_name__icontains=search) |
+                Q(trade_name__icontains=search) |
+                Q(cnpj__icontains=search)
+            )
+
+            customers = CustomerSerializer(search_customers, many=True)
+            suppliers = SupplierSerializer(search_suppliers, many=True)
+            contacts = customers.data + suppliers.data
+        else:
+            customers = CustomerSerializer(business.customers, many=True)
+            suppliers = SupplierSerializer(business.suppliers, many=True)   
+            contacts = customers.data + suppliers.data
 
         paginated_data = paginate(contacts, request, 50)
         
