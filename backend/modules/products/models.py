@@ -13,9 +13,6 @@ class Product(models.Model):
     
     sku = models.CharField(
         max_length=100,
-        unique=True,
-        blank=True,
-        null=True,
         db_index=True,
     )
 
@@ -69,6 +66,15 @@ class Product(models.Model):
     track_stock = models.BooleanField(default=True)
     is_active = models.BooleanField(default=True)
 
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['business', 'sku'],
+                name='uniq_product_sku_per_business'
+            )
+        ]
+
     
     def __str__(self):
         return self.name
@@ -96,7 +102,7 @@ class ProductCategory(models.Model):
         null=True, 
     )
 
-    name = models.CharField(max_length=150, unique=True)
+    name = models.CharField(max_length=150)
     is_active = models.BooleanField(default=True)
 
 
