@@ -10,15 +10,6 @@ class Contact(models.Model):
     )
     
     is_active = models.BooleanField(default=True)
-    
-    code = models.CharField(
-        max_length=50,
-        unique=True,
-        blank=True,
-        null=True,
-        db_index=True,
-    )
-
     phone = models.CharField(max_length=11, blank=True, null=True)
     email = models.EmailField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -48,9 +39,15 @@ class Customer(Contact):
     name = models.CharField(max_length=150, db_index=True)
     alias = models.CharField(max_length=150, blank=True, null=True, db_index=True)
 
+    code = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        db_index=True,
+    )
+
     cpf = models.CharField(
         max_length=11,
-        unique=True,
         blank=True,
         null=True, 
         db_index=True,
@@ -74,6 +71,19 @@ class Customer(Contact):
         null=True
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['business', 'cpf'],
+                name='uniq_cpf_per_business'
+            ),
+            models.UniqueConstraint(
+                fields=['business', 'code'],
+                name='uniq_supplier_code_per_business'
+            )
+
+        ]
+
 
     def __str__(self):
         return self.name 
@@ -89,9 +99,15 @@ class Supplier(Contact):
         db_index=True
     )
 
+    code = models.CharField(
+        max_length=50,
+        blank=True,
+        null=True,
+        db_index=True,
+    )
+
     cnpj = models.CharField(
         max_length=14,
-        unique=True,
         blank=True,
         null=True,
         db_index=True,
@@ -108,6 +124,18 @@ class Supplier(Contact):
         blank=True,
         null=True
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['business', 'cnpj'],
+                name='uniq_cnpj_per_business'
+            ),
+            models.UniqueConstraint(
+                fields=['business', 'code'],
+                name='uniq_customer_code_per_business'
+            )
+        ]
 
 
     def __str__(self):
