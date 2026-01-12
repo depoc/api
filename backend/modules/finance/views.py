@@ -293,6 +293,8 @@ class FinancialTransactionEndpoint(APIView):
             return Response(serializer.data, status.HTTP_200_OK)
         else:
             search = request.query_params.get('search')
+            _type = request.query_params.get('type')
+            category = request.query_params.get('category')
             bank = request.query_params.get('bank')
             date = request.query_params.get('date')
             start_date = request.query_params.get('start_date')
@@ -311,6 +313,24 @@ class FinancialTransactionEndpoint(APIView):
                     Q(amount__startswith=search) |
                     Q(description__icontains=search) |
                     Q(id__exact=search)
+                )
+
+            if _type:
+                if _type not in ('credit', 'debit', 'transfer'):
+                    error_response = error.builder(
+                        400,
+                        'Invalid status. ' \
+                        'Allowed values: credit, debit, transfer.'
+                    )
+                    return Response(error_response, status.HTTP_400_BAD_REQUEST)
+                
+                transactions = transactions.filter(
+                    Q(type__exact=_type)
+                )
+
+            if category:
+                transactions = transactions.filter(
+                    Q(category_id__exact=category)
                 )
 
             if bank:
