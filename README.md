@@ -2,7 +2,7 @@
 
 A comprehensive management system built by a business owner, tailored for small Brazilian businesses.
 
-This project took shape in response to a specific need in my last brick-and-mortar store. After closing the business, I continued developing and refining the system.
+This project took shape in response to a specific need in my last brick-and-mortar store.
 
 # Contents
 
@@ -136,7 +136,7 @@ Some API resources have support for retrieval via search parameter.
 - `search` *str*
   The search term longer the three characters.
 
-`https://api.depoc.com.br/contacts/?search=supp`
+`https://api.depoc.com.br/contacts?search=supp`
 
 ```json
 "count": 1,
@@ -186,7 +186,7 @@ The date and search parameters can be used combined (e.g., `/?date=today&search=
 ## Rate Limit
 The global rate limit is 60 requests per minute and up to 1,000 requests per day.
 
-## Core Resources
+## Exemple Resources
 
 ### `/me`
 
@@ -253,41 +253,107 @@ GET `https://api.depoc.com.br/me`
 </details>
 
 ### `/accounts`
-```json
-```
 
-### `/owner`
-```json
-```
+Create a new account.
 
-### `/business`
+POST `https://api.depoc.com.br/accounts`
+
 ```json
+"user": {
+    "name": "The User",
+    "username": "theuser",
+    "email": "user@email.com",
+    "password": "secret",
+}
 ```
+<details>
+
+<summary>Attributes</summary>
+
+- **name** *str*
+
+  Name of the user.
+
+  Exemple: `Sample User`
+
+- **username** *str*
+
+  Username of the user
+
+  Exemple: `theusername`
+
+- **email** *str*
+
+  Email of the user.
+
+  Exemple: `user@email.com`
+
+- **password** *str*
+
+  Password of the user.
+
+  Exemple: `!secretpassword`
+
+</details>
 
 ### `/contacts`
-```json
-```
 
-### `/finance`
-```json
-```
+Retrieve all contacts.
 
-### `/members`
-```json
-```
+GET `https://api.depoc.com.br/contacts`
 
-### `/products`
 ```json
+{
+    "count": 2,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "customer": {
+                "id": "01JN6Y34TSBZX7415DAZK7A1QC",
+                "code": "1",
+                "name": "Customer",
+                "alias": "C1",
+                "gender": "male",
+                "cpf": "01922875389",
+                "is_active": true,
+                "notes": "",
+                "phone": "11989283948",
+                "email": "customer@email.com",
+                "postcode": "47090000",
+                "city": "São Paulo",
+                "state": "SP",
+                "address": "Avenida",
+                "amount_spent": "0.00",
+                "number_of_orders": 0,
+                "created_at": "2025-02-28T15:46:23.836267-03:00",
+                "updated_at": "2025-04-30"
+            }
+        },
+        {
+            "supplier": {
+                "id": "01JV0RQS2AN0EN7AS2XHEPA7JE",
+                "code": 2,
+                "legal_name": "Supplier Inc",
+                "trade_name": "The Supplier Shop",
+                "cnpj": null,
+                "ie": null,
+                "im": null,
+                "is_active": true,
+                "notes": null,
+                "phone": null,
+                "email": null,
+                "postcode": null,
+                "city": null,
+                "state": null,
+                "address": null,
+                "created_at": "2025-05-11T19:51:32.811784-03:00",
+                "updated_at": "2025-05-11"
+            }
+        }
+    ]
+}
 ```
-
-### `/payables`
-```json
-```
-
-### `/receivables`
-```json
-```
-
 
 # Stack
 
@@ -302,6 +368,6 @@ GET `https://api.depoc.com.br/me`
   - RDS (PostgreSQL)
   - Route 53 (DNS)
 - **Nginx** as reverse proxy
-- **Celery** for asynchronous tasks
+- **Celery** for updating payment status
 - **RabbitMQ** for monitoring payment due dates
 - **GitHub Actions** for CI/CD
