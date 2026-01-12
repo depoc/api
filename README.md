@@ -354,6 +354,158 @@ GET `https://api.depoc.com.br/contacts`
     ]
 }
 ```
+<details>
+
+<summary>Customer Attributes</summary>
+
+- **id** *str*  
+  Unique identifier of the customer.  
+  Example: `01JN6Y34TSBZX7415DAZK7A1QC`
+
+- **code** *str*  
+  Customer code.  
+  Example: `1`
+
+- **name** *str*  
+  Full name of the customer.  
+  Example: `Customer`
+
+- **alias** *str*  
+  Short name or nickname.  
+  Example: `C1`
+
+- **gender** *str*  
+  Gender of the customer.  
+  Example: `male`
+
+- **cpf** *str*  
+  Brazilian CPF number.  
+  Example: `01922875389`
+
+- **is_active** *bool*  
+  Whether the customer is active.  
+  Example: `true`
+
+- **notes** *str*  
+  Additional notes.  
+  Example: `""`
+
+- **phone** *str*  
+  Phone number of the customer.  
+  Example: `11989283948`
+
+- **email** *str*  
+  Email address.  
+  Example: `customer@email.com`
+
+- **postcode** *str*  
+  Postal code.  
+  Example: `47090000`
+
+- **city** *str*  
+  City of residence.  
+  Example: `São Paulo`
+
+- **state** *str*  
+  State of residence.  
+  Example: `SP`
+
+- **address** *str*  
+  Street address.  
+  Example: `Avenida`
+
+- **amount_spent** *str*  
+  Total amount spent.  
+  Example: `"0.00"`
+
+- **number_of_orders** *int*  
+  Total number of orders.  
+  Example: `0`
+
+- **created_at** *str*  
+  Creation timestamp.  
+  Example: `2025-02-28T15:46:23.836267-03:00`
+
+- **updated_at** *str*  
+  Last update timestamp.  
+  Example: `2025-04-30`
+
+</details>
+
+<details>
+
+<summary>Supplier Attributes</summary>
+
+- **id** *str*  
+  Unique identifier of the supplier.  
+  Example: `01JV0RQS2AN0EN7AS2XHEPA7JE`
+
+- **code** *int*  
+  Supplier code.  
+  Example: `2`
+
+- **legal_name** *str*  
+  Legal name of the supplier.  
+  Example: `Supplier Inc`
+
+- **trade_name** *str*  
+  Commercial name.  
+  Example: `The Supplier Shop`
+
+- **cnpj** *str | null*  
+  Brazilian CNPJ number.  
+  Example: `null`
+
+- **ie** *str | null*  
+  State registration.  
+  Example: `null`
+
+- **im** *str | null*  
+  Municipal registration.  
+  Example: `null`
+
+- **is_active** *bool*  
+  Whether the supplier is active.  
+  Example: `true`
+
+- **notes** *str | null*  
+  Additional notes.  
+  Example: `null`
+
+- **phone** *str | null*  
+  Phone number.  
+  Example: `null`
+
+- **email** *str | null*  
+  Email address.  
+  Example: `null`
+
+- **postcode** *str | null*  
+  Postal code.  
+  Example: `null`
+
+- **city** *str | null*  
+  City.  
+  Example: `null`
+
+- **state** *str | null*  
+  State.  
+  Example: `null`
+
+- **address** *str | null*  
+  Street address.  
+  Example: `null`
+
+- **created_at** *str*  
+  Creation timestamp.  
+  Example: `2025-05-11T19:51:32.811784-03:00`
+
+- **updated_at** *str*  
+  Last update timestamp.  
+  Example: `2025-05-11`
+
+</details><br>
+
 
 # Stack
 
