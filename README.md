@@ -463,5 +463,5 @@ GET `https://api.depoc.com.br/contacts`
   - Route 53 (DNS)
 - **Nginx** as reverse proxy
 - **Celery** for updating payment status
-- **RabbitMQ** for monitoring payment due dates
+- **RabbitMQ** message broker
 - **GitHub Actions** for CI/CD
