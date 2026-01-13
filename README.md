@@ -17,7 +17,7 @@ The Depoc RESTful api made with Django
 # API Reference
 
 The system exposes a RESTful interface at the root endpoint https://api.depoc.com.br, serving as the primary access point for client interaction. It uses resource-oriented URLs, and operates with JSON HTTP requests and responses.
-For more details about the api access official [documentation](https://documenter.getpostman.com/view/40473934/2sBXVfkC3U)
+For more details about the api access official [documentation](https://documenter.getpostman.com/view/40473934/2sBXVfkC3U).
 
 ## Authentication
 
