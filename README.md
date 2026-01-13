@@ -17,23 +17,18 @@ The Depoc RESTful api made with Django
 # API Reference
 
 The system exposes a RESTful interface at the root endpoint https://api.depoc.com.br, serving as the primary access point for client interaction. It uses resource-oriented URLs, and operates with JSON HTTP requests and responses.
+For more details about the api access official [documentation](https://documenter.getpostman.com/view/40473934/2sBXVfkC3U)
 
 ## Authentication
 
-The Depoc API uses JWT (JSON Web Token) to authenticate requests.
-
-```bash 
-curl https://api.depoc.com.br/me \
--H "Authorization: Bearer YOUR_TOKEN" \
--H "Content-Type: application/json"
-```
+Requests use the HTTP `Authorization` header to both authenticate and authorize operations. The Depoc API accepts bearer tokens in this header.
 
 ## Errors
 
 Depoc uses standard HTTP status codes to signal the outcome of API requests:
 
 - 2xx: Success
-- 4xx: Client error (e.g., invalid request parameters)
+- 4xx: Client error (e.g., invalid request)
 - 5xx: Server error (Depoc-side failure)
 
 ```json
@@ -57,14 +52,18 @@ Depoc uses standard HTTP status codes to signal the outcome of API requests:
 
   Message describing the error.
 
+- `invalid` *str*
+
+  List of invalid parameters.
+
 - `details` *object*
 
-  Provide detailed error information. Especially useful for client-side issues such as invalid parameters.
+  Provide detailed error information. Especially useful for client-side issues such as failed validation.
 
 
 ## Pagination
 
-All API resources that may return large datasets are paginated (e.g., contacts, transactions). Each page returns a maximum of 50 items.
+Endpoints that may return large datasets support offset pagination requests. By default, Depoc returns 50 items per API call. If the number of items in a response from a support endpoint exceeds the default, then an integration can use pagination to request the next pages of the resource.
 
 ```json
 "count": 502,
@@ -73,7 +72,7 @@ All API resources that may return large datasets are paginated (e.g., contacts, 
 "results": [
     {
         "transaction": {
-            "id": "01JYM6QVGZBSTGMECFQV138WAA",
+            "id": "01JYM6QVGZBSTGLOLFQV138WAA",
             "description": "First Sale",
             "amount": "300.00",
             "type": "credit",
@@ -101,88 +100,33 @@ All API resources that may return large datasets are paginated (e.g., contacts, 
 ]
 ```
 
-**Parameters**
+**Responses**
 
-- `page` *int*
+If an endpoint supports pagination, then the response object contains the below fields.
 
-   The page number to retrieve in a paginated response (e.g., `/finance/transactions?page=2`)
-
-**Pagination Response Format**
-
-- `count` *int*
+- `count` *number*
 
    The number of results returned.
 
-- `next` *url*
+- `next` *string*
 
    The URL for the next page.
 
-- `previous` *url*
+- `previous` *string*
 
    The URL for the previous page.
 
-- `results` *array*
+- `results` *list*
 
    An array containing the response elements.
 
-## Search
+## Request Limit
 
-Some API resources have support for retrieval via search parameter.
+To ensure a consistent developer experience for all API users, the Depoc API is rate limited.
 
-**Parameters**
+### RATE LIMIT
 
-- `search` *str*
-  The search term longer the three characters.
-
-`https://api.depoc.com.br/contacts?search=supp`
-
-```json
-"count": 1,
-"next": null,
-"previous": null,
-"results": [
-    {
-        "supplier": {
-            "id": "01JV0RQS2AN6EN7AS2XHEPB9JE",
-            "code": null,
-            "legal_name": "Supplier Inc",
-            "trade_name": "Supp",
-            "cnpj": null,
-            "ie": null,
-            "im": null,
-            "is_active": true,
-            "notes": null,
-            "phone": null,
-            "email": null,
-            "postcode": null,
-            "city": null,
-            "state": null,
-            "address": null,
-            "created_at": "2025-05-11T19:51:32.811784-03:00",
-            "updated_at": "2025-05-11"
-        }
-    }
-]
-```
-
-## Date
-
-Some API resources support filtering results by date.
-
-**Parameters**
-
-- `date` *str*
-
-  The `date` parameter exclusively accepts the following shortcuts: `today`, `week`, and `month`, in addition to the standard date format "YYYY-MM-DD".
-
-- `start_date` & `end_date` *str*
-
-   Must be paired together and must follow the "YYYY-MM-DD" format.
-
-The date and search parameters can be used combined (e.g., `/?date=today&search=bags`)
-
-## Rate Limit
-The global rate limit is 60 requests per minute and up to 1,000 requests per day.
+Rate-limited requests will return "detail": "Request was throttled. Expected available in X seconds." (HTTP response status 429). The rate limit for incoming requests per integration is an average of 60 requests per minute.
 
 ## Exemple Resources
 
